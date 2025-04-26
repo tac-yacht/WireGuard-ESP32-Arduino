@@ -14,7 +14,7 @@
 #include "lwip/ip.h"
 #include "lwip/netdb.h"
 
-#include "esp32-hal-log.h"
+#include "esp_log.h"
 
 extern "C" {
 #include "wireguardif.h"
@@ -73,23 +73,17 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
         lwip_freeaddrinfo(res);
 
         peer.endpoint_ip = endpoint_ip;
-        log_i(TAG "%s is %3d.%3d.%3d.%3d"
-			, remotePeerAddress
-            , (endpoint_ip.u_addr.ip4.addr >>  0) & 0xff
-            , (endpoint_ip.u_addr.ip4.addr >>  8) & 0xff
-            , (endpoint_ip.u_addr.ip4.addr >> 16) & 0xff
-            , (endpoint_ip.u_addr.ip4.addr >> 24) & 0xff
-            );
+        ESP_LOGI(TAG, "%s is %s", remotePeerAddress, ipaddr_ntoa(endpoint_ip));
 		break;
     }
 	if( !success_get_endpoint_ip  ) {
-		log_e(TAG "failed to get endpoint ip.");
+		ESP_LOGE(TAG, "failed to get endpoint ip.");
 		return false;
 	}
 	// Register the new WireGuard network interface with lwIP
 	wg_netif = netif_add(&wg_netif_struct, ip_2_ip4(&localIP), ip_2_ip4(&Subnet), ip_2_ip4(&Gateway), &wg, &wireguardif_init, &ip_input);
 	if( wg_netif == nullptr ) {
-		log_e(TAG "failed to initialize WG netif.");
+		ESP_LOGE(TAG, "failed to initialize WG netif.");
 		return false;
 	}
 	// Mark the interface as administratively up, link up flag is set automatically when peer connects
@@ -113,7 +107,7 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
 	wireguardif_add_peer(wg_netif, &peer, &wireguard_peer_index);
 	if ((wireguard_peer_index != WIREGUARDIF_INVALID_INDEX) && !ip_addr_isany(&peer.endpoint_ip)) {
 		// Start outbound connection to peer
-        log_i(TAG "connecting wireguard...");
+        ESP_LOGI(TAG, "connecting wireguard...");
 		wireguardif_connect(wg_netif, wireguard_peer_index);
 		// Save the current default interface for restoring when shutting down the WG interface.
 		previous_default_netif = netif_default;
