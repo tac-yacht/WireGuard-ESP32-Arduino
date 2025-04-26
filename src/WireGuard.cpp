@@ -73,7 +73,7 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
         lwip_freeaddrinfo(res);
 
         peer.endpoint_ip = endpoint_ip;
-        ESP_LOGI(TAG, "%s is %s", remotePeerAddress, ipaddr_ntoa(endpoint_ip));
+        ESP_LOGI(TAG, "%s is %s", remotePeerAddress, ipaddr_ntoa(&endpoint_ip));
 		break;
     }
 	if( !success_get_endpoint_ip  ) {
