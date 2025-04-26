@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #pragma once
+
+#include "lwip/ip_addr.h"
 #if __has_include(<IPAddress.h>)
 #include <IPAddress.h>
 #define FOR_ARDUINO
