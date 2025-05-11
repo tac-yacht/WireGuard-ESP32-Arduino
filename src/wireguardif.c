@@ -921,9 +921,6 @@ err_t wireguardif_init(struct netif *netif) {
 	uint8_t private_key[WIREGUARD_PRIVATE_KEY_LEN];
 	size_t private_key_len = sizeof(private_key);
 
-	struct netif* underlying_netif = get_default_netif();
-	log_i(TAG "underlying_netif = %p", underlying_netif);
-
 	LWIP_ASSERT("netif != NULL", (netif != NULL));
 	LWIP_ASSERT("state != NULL", (netif->state != NULL));
 
@@ -935,6 +932,17 @@ err_t wireguardif_init(struct netif *netif) {
 
 		// The init data is passed into the netif_add call as the 'state' - we will replace this with our private state data
 		init_data = (struct wireguardif_init_data *)netif->state;
+
+		struct netif* underlying_netif;
+		if(init_data->bind_netif) {
+			log_i(TAG "underlying_netif = specified");
+			underlying_netif = init_data->bind_netif;
+		} else {
+			log_i(TAG "underlying_netif = default selecting");
+			underlying_netif = get_default_netif();
+		}
+		log_i(TAG "underlying_netif = %p", underlying_netif);
+
 
 		// Clear out and set if function is successful
 		netif->state = NULL;
