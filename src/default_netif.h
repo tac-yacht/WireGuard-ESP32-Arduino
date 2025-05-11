@@ -3,6 +3,6 @@
 
 #include "lwip/netif.h"
 
-netif* get_default_netif();
+struct netif* get_default_netif();
 
 #endif /* _DEFAULT_NETIF_H_ */

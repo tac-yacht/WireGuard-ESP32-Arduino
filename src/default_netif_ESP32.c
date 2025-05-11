@@ -9,7 +9,7 @@
 #include "tcpip_adapter.h"
 #endif
 
-netif* get_default_netif() {
+struct netif* get_default_netif() {
 #ifdef ESP_IDF
 	return esp_netif_get_netif_impl(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
 	//key -> https://github.com/espressif/esp-idf/blob/v4.1/components/esp_netif/esp_netif_defaults.c#L42
