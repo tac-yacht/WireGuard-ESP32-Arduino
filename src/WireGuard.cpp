@@ -51,7 +51,7 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
 	wg.private_key = privateKey;
     wg.listen_port = remotePeerPort;
 	
-	wg.bind_netif = NULL;
+	wg.bind_netif = get_default_netif();
 
 	// Initialise the first WireGuard peer structure
 	wireguardif_peer_init(&peer);
