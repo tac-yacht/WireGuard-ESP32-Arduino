@@ -19,6 +19,7 @@
 extern "C" {
 #include "wireguardif.h"
 #include "wireguard-platform.h"
+#include "default_netif.h"
 }
 
 // Wireguard instance
