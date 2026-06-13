@@ -6,6 +6,7 @@
 #include "wireguard-platform.h"
 
 #include <stdlib.h>
+#include <sys/time.h>
 #include "crypto.h"
 #include "lwip/sys.h"
 #include "mbedtls/entropy.h"
