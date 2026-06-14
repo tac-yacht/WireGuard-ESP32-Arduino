@@ -81,7 +81,7 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
 		return false;
 	}
 	// Register the new WireGuard network interface with lwIP
-	wg_netif = (struct netif *)mem_malloc(sizeif(struct netif));
+	wg_netif = (struct netif *)mem_malloc(sizeof(struct netif));
 	memset(wg_netif, 0, sizeof(struct netif));
 	struct netif *result = netif_add(wg_netif, ip_2_ip4(&localIP), ip_2_ip4(&Subnet), ip_2_ip4(&Gateway), &wg, &wireguardif_init, &ip_input);
 	if( result == nullptr ) {
