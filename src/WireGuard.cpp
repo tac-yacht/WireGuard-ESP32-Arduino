@@ -23,7 +23,6 @@ extern "C" {
 }
 
 // Wireguard instance
-static struct netif wg_netif_struct = {0};
 static struct netif *wg_netif = NULL;
 static struct netif *previous_default_netif = NULL;
 static uint8_t wireguard_peer_index = WIREGUARDIF_INVALID_INDEX;
@@ -82,8 +81,10 @@ bool WireGuard::begin(const ip_addr_t& localIP, const ip_addr_t& Subnet, const i
 		return false;
 	}
 	// Register the new WireGuard network interface with lwIP
-	wg_netif = netif_add(&wg_netif_struct, ip_2_ip4(&localIP), ip_2_ip4(&Subnet), ip_2_ip4(&Gateway), &wg, &wireguardif_init, &ip_input);
-	if( wg_netif == nullptr ) {
+	wg_netif = (struct netif *)mem_malloc(sizeif(struct netif));
+	memset(wg_netif, 0, sizeof(struct netif));
+	struct netif *result = netif_add(wg_netif, ip_2_ip4(&localIP), ip_2_ip4(&Subnet), ip_2_ip4(&Gateway), &wg, &wireguardif_init, &ip_input);
+	if( result == nullptr ) {
 		ESP_LOGE(TAG, "failed to initialize WG netif.");
 		return false;
 	}
@@ -144,6 +145,8 @@ void WireGuard::end() {
 	wireguardif_shutdown(wg_netif);
 	// Remove the WG interface;
 	netif_remove(wg_netif);
+
+	mem_free(wg_netif);
 	wg_netif = nullptr;
 
 	this->_is_initialized = false;
